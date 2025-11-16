@@ -4,9 +4,9 @@
 #include <SDL3/SDL.h>
 #include <CLI/CLI.hpp>
 
-//#ifdef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
-//#endif
+#endif
 
 static SDL_Window* window;
 static SDL_Renderer* renderer;
@@ -39,29 +39,6 @@ void main_loop(void) {
 
 int main(int argc, char** argv)
 {
-    /*CLI::App app{"3dentt"};
-
-    std::string name;
-
-    app.add_option("-n,--name", name, "Your name");
-
-    CLI11_PARSE(app, argc, argv);
-
-#ifndef __EMSCRIPTEN__
-    // If no name was provided, show help
-    if (name.empty()) {
-        std::cout << app.help() << std::endl;
-        return 0;
-    }
-
-    std::cout << "Hello " << name << std::endl;
-#endif
-
-    fmt::print("Such a relief when it works!\n");
-
-    auto msg = fmt::format(fmt::fg(fmt::color::red), "This is a red message!\n");
-    std::cout << msg << std::endl;*/
-
      // Set the hint BEFORE window creation or SDL_Init
     SDL_SetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT, "#canvas");
 
@@ -73,16 +50,16 @@ int main(int argc, char** argv)
     window = SDL_CreateWindow("3Dentt", 640, 480, SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, nullptr);
 
-//#ifdef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
     // The browser controls the loop now
     emscripten_set_main_loop(main_loop, 0, 1);
-//#else
+#else
     // Native fallback (for local testing)
-//    while (running) {
-//        main_loop();
-//        SDL_Delay(16);
-//    }
-//#endif
+    while (running) {
+        main_loop();
+        SDL_Delay(16);
+    }
+#endif
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
