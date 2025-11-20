@@ -3,5 +3,12 @@
     "fmt",
     "sdl3",
     "cli11"
-  ]
+  ],
+  "overrides": [
+    {
+      "name": "sdl3",
+      "version": "3.2.4"
+    }
+  ],
+  "builtin-baseline": "271a5b8850aa50f9a40269cbf3cf414b36e333d6"
 }

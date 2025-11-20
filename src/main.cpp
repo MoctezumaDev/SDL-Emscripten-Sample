@@ -2,6 +2,7 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <CLI/CLI.hpp>
 
 #ifdef __EMSCRIPTEN__
@@ -14,7 +15,14 @@ static bool running = true;
 
 void main_loop(void) {
     SDL_Event event;
-    SDL_Log("LOOP");
+
+    fflush(stdout);
+
+    // Example draw
+    SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_EVENT_QUIT:
@@ -30,24 +38,20 @@ void main_loop(void) {
                 break;
         }
     }
-
-    // Example draw
-    SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char** argv)
 {
-     // Set the hint BEFORE window creation or SDL_Init
+    // Set the hint BEFORE window creation or SDL_Init
     SDL_SetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT, "#canvas");
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "%s", SDL_GetError());
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return -1;
     }
+    SDL_Log("Success");
 
-    window = SDL_CreateWindow("3Dentt", 640, 480, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("App", 640, 480, SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, nullptr);
 
 #ifdef __EMSCRIPTEN__

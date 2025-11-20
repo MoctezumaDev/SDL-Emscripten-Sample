@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(3dentt LANGUAGES CXX)
+project(app LANGUAGES CXX)
 
 if(EMSCRIPTEN)
     message(STATUS "Building for WebAssembly / Emscripten")
@@ -33,22 +33,34 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
-# --- SDL3 setup ---
-# For native builds (MSVC / MinGW), use find_package
-#if (NOT EMSCRIPTEN)
-    find_package(SDL3 CONFIG REQUIRED)
-#endif()
+find_package(SDL3 CONFIG REQUIRED)
 
 add_executable(app src/main.cpp)
 
 if (EMSCRIPTEN)
-    set_target_properties(app PROPERTIES
-       LINK_FLAGS "-sUSE_SDL=3 -sFULL_ES3=1 -sASSERTIONS=2 -sUSE_WEBGL2=1 -sALLOW_MEMORY_GROWTH=1 -sWASM=1"
-    #    LINK_FLAGS "-sALLOW_MEMORY_GROWTH=1 -sWASM=1 -sEXPORTED_FUNCTIONS=[\"_main\"] -sEXPORTED_RUNTIME_METHODS=[\"cwrap\"]"
-        SUFFIX ".html"
-    )
-    # target_link_libraries(app PRIVATE fmt::fmt CLI11::CLI11)
-    target_link_libraries(app PRIVATE fmt::fmt SDL3::SDL3 CLI11::CLI11)
+    # Set output file suffix
+    set_target_properties(app PROPERTIES SUFFIX ".html")
+
+    # Set Emscripten linker flags
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_link_options(app PRIVATE
+        -sENVIRONMENT=web
+        -sALLOW_MEMORY_GROWTH=1
+        -sMALLOC=emmalloc
+        -sWASM=1
+        -sASSERTIONS=2
+        -sVERBOSE=1
+        -sEXCEPTION_DEBUG=1
+        -gsource-map
+        -g4)
+else()
+    target_link_options(app PRIVATE
+        -sENVIRONMENT=web
+        -sALLOW_MEMORY_GROWTH=1
+        -sMALLOC=emmalloc
+        -sWASM=1)
+endif()
+    target_link_libraries(app PRIVATE fmt::fmt SDL3::SDL3-static CLI11::CLI11)
 else()
     target_link_libraries(app PRIVATE fmt::fmt SDL3::SDL3 CLI11::CLI11)
 endif()

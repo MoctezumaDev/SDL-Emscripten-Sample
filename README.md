@@ -20,6 +20,7 @@ It enables you to easily install and integrate libraries like SDL3 into your CMa
 [Emscripten](https://emscripten.org/) is a toolchain for compiling C/C++ to WebAssembly or asm.js.  
 It provides an LLVM-based compiler (`emcc`) and ports of common libraries, allowing native applications—such as those using SDL3—to run in the browser.
 
+[SDL3](https://wiki.libsdl.org/SDL3/README-emscripten)
 ---
 
 # Building on Windows (Emscripten + SDL3 + CMake + Ninja + Vcpkg)
