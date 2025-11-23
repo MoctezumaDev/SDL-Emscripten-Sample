@@ -48,6 +48,11 @@ cd path/to/emsdk
 ./emsdk_env.ps1
 ```
 
+### 2.1 MSYS2
+```
+/ucrt64/etc/profile.d/emscripten.sh
+```
+
 ---
 
 ## 3. Configure the Project With CMake for Emscripten
@@ -59,6 +64,12 @@ emcmake cmake -S . -B build-emscripten `
   -DVCPKG_TARGET_TRIPLET=wasm32-emscripten `
   -DCMAKE_BUILD_TYPE=Debug `
   -G Ninja
+```
+
+```msys2
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="/c/tools/vcpkg/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic -DCMAKE_BUILD_TYPE=Debug -G "MinGW Makefiles"
+
+cmake --build build -- -j
 ```
 
 ---
